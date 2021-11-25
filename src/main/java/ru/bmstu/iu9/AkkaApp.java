@@ -41,35 +41,17 @@ public class AkkaApp {
 
     private static Flow<HttpRequest, HttpResponse, NotUsed> createFLow(Http http, ActorSystem system,
                                                                        ActorMaterializer materializer, ActorRef actor){
-        return Flow.of(HttpRequest.class).
-                map(
-                        (req) -> {
-                            Query query = req.getUri().query();
-                            String url = query.get(TEST_URL).get();
-                            int count = Integer.parseInt(
-                                    query.get(COUNT).get()
-                            );
-                            System.out.println(url + " - " + count + "");
-                            return new Pair<String, Integer>(url, count);
-                        }
-                ).
-                mapAsync(MAP_ASYNC,
-                        req -> {
-                            CompletionStage<Object> completionStage = Patterns.ask(
-                                    actor,
-                                    new Message(req.first()),
-                                    Duration.ofSeconds(TIME_OUT)
-                            );
-                            return completionStage.thenCompose(
-                                    res -> {
-                                        if((Integer) res >= 0) {
-                                            return CompletableFuture.
-                                                    completedFuture(new Pair<>(
-                                                            req.first(),
-                                                            (Integer) res
-                                                    ));
-                                        }
-                                        Flow<
+        return Flow.of(HttpRequest.class).map(
+                (req) -> {
+                    Query query = req.getUri().query();
+                    String url = query.get(TEST_URL).get();
+                    int count = Integer.parseInt(
+                            query.get(COUNT).get()
+                    );
+                    System.out.println(url + " - " + count + "");
+                    return new Pair<String, Integer>(url, count);
+                }
+                ).mapAsync(MAP_ASYNC, req -> { CompletionStage<Object> completionStage = Patterns.ask(actor, new Message(req.first()), Duration.ofSeconds(TIME_OUT));return completionStage.thenCompose(res -> { if((Integer) res >= 0) { return CompletableFuture.completedFuture(new Pair<>(req.first(), (Integer) res)); }Flow<
                                                 Pair<
                                                         String,
                                                         Integer
