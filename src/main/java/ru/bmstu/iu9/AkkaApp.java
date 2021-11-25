@@ -85,9 +85,35 @@ public class AkkaApp {
                                             req.second(),
                                             url -> {
                                                 long start = System.currentTimeMillis();
-                                                asyncHttpClient().prepareGet(url).execute();long end = System.currentTimeMillis();System.out.println(TIME_RESPONSE + (int) (end - start) + "\n");return CompletableFuture.completedFuture((int) (end - start)); });return Source.single(req).via(flow).toMat(Sink.fold(0, Integer::sum), Keep.right()).run(materializer).thenApply(sum -> new Pair<>(req.first(), (sum / req.second()))); });
+                                                asyncHttpClient().prepareGet(url).execute();
+                                                long end = System.currentTimeMillis();
+                                                System.out.println(TIME_RESPONSE + (int) (end - start) + "\n");
+                                                return CompletableFuture.completedFuture(
+                                                        (int) (end - start)
+                                                );
+                                            }
+                                    );
+                                    return Source.
+                                            single(req).
+                                            via(flow).
+                                            toMat(
+                                                    Sink.fold(
+                                                            0,
+                                                            Integer::sum
+                                                    ),
+                                                    Keep.right()
+                                            ).
+                                            run(materializer).
+                                            thenApply(
+                                                    sum -> new Pair<>(
+                                                            req.first(),
+                                                            (sum / req.second())
+                                                    )
+                                            );
+                                }
+                        );
                     }
-                        ).
+                ).
                 map(
                         req -> {
                             actor.tell(
