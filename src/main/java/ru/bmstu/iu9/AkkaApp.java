@@ -49,7 +49,7 @@ public class AkkaApp {
                             int count = Integer.parseInt(
                                     query.get(COUNT).get()
                             );
-                            System.out.println(url + " " + count);
+                            System.out.println(url + " - " + count + "");
                             return new Pair<String, Integer>(url, count);
                         }
                 ).
@@ -92,6 +92,7 @@ public class AkkaApp {
                                                         long start = System.currentTimeMillis();
                                                         asyncHttpClient().prepareGet(url).execute();
                                                         long end = System.currentTimeMillis();
+                                                        System.out.println(TIME_RESPONSE + (int) (end - start) + "\n");
                                                         return CompletableFuture.
                                                                 completedFuture(
                                                                         (int) (end - start)
@@ -128,6 +129,7 @@ public class AkkaApp {
                                     ),
                                     ActorRef.noSender()
                             );
+                            System.out.println(AVG_RESPONSE_TIME_PTR + req.second());
                             return HttpResponse.create().withEntity(
                                     req.second().toString() + '\n'
                             );
