@@ -76,9 +76,10 @@ public class AkkaApp {
                                                         pair -> new ArrayList<>(
                                                                 Collections.
                                                                         nCopies(
-                                                                                pair.ge
+                                                                                pair.getValue(),
+                                                                                pair.getKey()
                                                                         ))
-                                                )
+                                                ).mapAsync()
                                     }
                             )
                         }
