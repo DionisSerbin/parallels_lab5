@@ -12,6 +12,9 @@ import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.Query;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
+import akka.stream.javadsl.Keep;
+import akka.stream.javadsl.Sink;
+import akka.stream.javadsl.Source;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -92,7 +95,16 @@ public class AkkaApp {
                                                                 );
                                                     }
                                                 );
-                                        return S
+                                        return Source.
+                                                single(req).
+                                                via(flow).
+                                                toMat(
+                                                        Sink.fold(
+                                                                (int) 0,
+                                                                Integer::sum
+                                                        ),
+                                                        Keep.right()
+                                                ).
                                     }
                             )
                         }
