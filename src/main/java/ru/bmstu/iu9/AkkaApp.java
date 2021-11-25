@@ -14,7 +14,10 @@ import java.io.IOException;
 
 public class AkkaApp {
 
-    private static 
+    private static Flow<HttpRequest, HttpResponse, NotUsed> createFLow(Http http, ActorSystem system,
+                                                                       ActorMaterializer materializer, ActorRef actor){
+
+    }
 
     public static void main(String[] args) throws IOException {
         System.out.println("Server is starting");
@@ -26,7 +29,7 @@ public class AkkaApp {
                 HttpRequest,
                 HttpResponse,
                 NotUsed
-                > routeFlow =
+                > routeFlow = createFLow(http, system, materializer)
     }
 
 
