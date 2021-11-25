@@ -22,6 +22,15 @@ public class CacheActor extends AbstractActor {
                             );
                         }
                 ).
-                match()
+                match(
+                        StorageMessage.class,
+                        m -> {
+                            storage.putIfAbsent(
+                                    m.getUrl(),
+                                    m.getTime()
+                            );
+                        }
+                ).
+                build();
     }
 }
