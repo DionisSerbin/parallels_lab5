@@ -116,7 +116,20 @@ public class AkkaApp {
                             );
                         }
                 ).
-                map()
+                map(
+                        req -> {
+                            actor.tell(
+                                    new StorageMessage(
+                                            req.getKey(),
+                                            req.getValue()
+                                    ),
+                                    ActorRef.noSender()
+                            );
+                            return HttpResponse.create().withEntity(
+                                    req.getValue().toString() + '\n'
+                            );
+                        }
+                );
     }
 
     public static void main(String[] args) throws IOException {
