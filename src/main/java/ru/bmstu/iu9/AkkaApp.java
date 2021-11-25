@@ -10,12 +10,13 @@ import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.Query;
+import akka.japi.Pair;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import akka.stream.javadsl.Keep;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
-import javafx.util.Pair;
+
 
 import java.io.IOException;
 import java.time.Duration;
@@ -54,7 +55,7 @@ public class AkkaApp {
                         req -> {
                             CompletionStage<Object> completionStage = Patterns.ask(
                                     actor,
-                                    new Message(req.getKey()),
+                                    new Message(req.first()),
                                     Duration.ofSeconds(TIME_OUT)
                             );
                             return completionStage.thenCompose(
@@ -62,7 +63,7 @@ public class AkkaApp {
                                         if((Integer) res >= 0) {
                                             return CompletableFuture.
                                                     completedFuture(new Pair<>(
-                                                            req.getKey(),
+                                                            req.first(),
                                                             (Integer) res
                                                     ));
                                         }
@@ -81,10 +82,10 @@ public class AkkaApp {
                                                         pair -> new ArrayList<>(
                                                                 Collections.
                                                                         nCopies(
-                                                                                pair.getValue(),
-                                                                                pair.getKey()
+                                                                                pair.second(),
+                                                                                pair.first()
                                                                         ))
-                                                ).mapAsync(req.getValue(),
+                                                ).mapAsync(req.second(),
                                                     url -> {
                                                         long start= System.currentTimeMillis();
                                                         asyncHttpClient().prepareGet(url).execute();
@@ -108,8 +109,8 @@ public class AkkaApp {
                                                 run(materializer).
                                                 thenApply(
                                                         sum -> new Pair<>(
-                                                                req.getKey(),
-                                                                (sum / req.getValue())
+                                                                req.first(),
+                                                                (sum / req.second())
                                                         )
                                                 );
                                     }
@@ -120,13 +121,13 @@ public class AkkaApp {
                         req -> {
                             actor.tell(
                                     new StorageMessage(
-                                            req.getKey(),
-                                            req.getValue()
+                                            req.first(),
+                                            req.second()
                                     ),
                                     ActorRef.noSender()
                             );
                             return HttpResponse.create().withEntity(
-                                    req.getValue().toString() + '\n'
+                                    req.second().toString() + '\n'
                             );
                         }
                 );
