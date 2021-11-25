@@ -16,6 +16,8 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import akka.pattern.Patterns;
@@ -68,7 +70,15 @@ public class AkkaApp {
                                                 NotUsed> flow = Flow.
                                                     <Pair<
                                                             String,
-                                                            Integer>>create().mapConcat()
+                                                            Integer>>
+                                                            create().
+                                                mapConcat(
+                                                        pair -> new ArrayList<>(
+                                                                Collections.
+                                                                        nCopies(
+                                                                                pair.ge
+                                                                        ))
+                                                )
                                     }
                             )
                         }
