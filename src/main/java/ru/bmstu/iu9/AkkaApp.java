@@ -38,8 +38,10 @@ public class AkkaApp {
                 > routeFlow = createFLow(http, system, materializer, actor);
         final CompletionStage<ServerBinding> bind = http.bindAndHandle(
                 routeFlow,
-                ConnectHttp.toHost(H)
-        )
+                ConnectHttp.toHost(LOCAL_HOST, PORT),
+                materializer
+        );
+        System.out.println("Server is starting at ");
     }
 
 }
