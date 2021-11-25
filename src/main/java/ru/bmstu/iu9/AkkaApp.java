@@ -79,7 +79,12 @@ public class AkkaApp {
                                                                                 pair.getValue(),
                                                                                 pair.getKey()
                                                                         ))
-                                                ).mapAsync(req.getValue())
+                                                ).mapAsync(req.getValue(),
+                                                    url -> {
+                                                        long start= System.currentTimeMillis();
+                                                        async
+                                                    }
+                                                )
                                     }
                             )
                         }
