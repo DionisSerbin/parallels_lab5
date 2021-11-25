@@ -16,7 +16,7 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
-import java.util.regex.Pattern;
+import akka.pattern.Patterns;
 
 public class AkkaApp {
 
@@ -42,7 +42,9 @@ public class AkkaApp {
                 ).
                 mapAsync(MAP_ASYNC,
                         req -> {
-                            CompletionStage<Object> completionStage = Pattern.ask(actor, new Message())
+                            CompletionStage<Object> completionStage = Patterns.ask(
+                                    actor,
+                                    new Message(req.first()))
                         }
                 )
     }
