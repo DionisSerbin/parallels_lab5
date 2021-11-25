@@ -26,7 +26,7 @@ public class AkkaApp {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Server is starting");
+        System.out.println("Server is going to start");
         ActorSystem system = ActorSystem.create("routes");
         ActorRef actor = system.actorOf(Props.create(CacheActor.class));
         final Http http = Http.get(system);
@@ -41,7 +41,7 @@ public class AkkaApp {
                 ConnectHttp.toHost(LOCAL_HOST, PORT),
                 materializer
         );
-        System.out.println("Server is starting at ");
+        System.out.println("Server is starting at http://" + LOCAL_HOST + ":" + PORT);
     }
 
 }
