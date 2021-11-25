@@ -16,6 +16,7 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import akka.pattern.Patterns;
 
@@ -46,10 +47,17 @@ public class AkkaApp {
                         req -> {
                             CompletionStage<Object> completionStage = Patterns.ask(
                                     actor,
-                                    req.
                                     new Message(req.first()),
                                     Duration.ofSeconds(TIME_OUT)
                             );
+                            return completionStage.thenCompose(
+                                    res -> {
+                                        if((Integer) res >= 0) {
+                                            return CompletableFuture.
+                                                    completedFuture(new Pair<>(req.first()))
+                                        }
+                                    }
+                            )
                         }
                 )
     }
