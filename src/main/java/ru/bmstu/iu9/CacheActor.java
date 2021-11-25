@@ -1,6 +1,7 @@
 package ru.bmstu.iu9;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import akka.japi.pf.ReceiveBuilder;
 
 import java.util.HashMap;
@@ -15,8 +16,12 @@ public class CacheActor extends AbstractActor {
                 match(
                         Message.class,
                         m -> {
-                            getSender().tell();
+                            getSender().tell(
+                                    storage.getOrDefault(m.getUrl(), -1),
+                                    ActorRef.noSender()
+                            );
                         }
-                )
+                ).
+                match()
     }
 }
