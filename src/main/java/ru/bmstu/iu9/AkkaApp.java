@@ -42,6 +42,10 @@ public class AkkaApp {
                 materializer
         );
         System.out.println("Server is starting at http://" + LOCAL_HOST + ":" + PORT);
+        System.in.read();
+        bind.
+                thenCompose(ServerBinding::unbind).
+                thenAccept(unbound -> system.terminate());
     }
 
 }
