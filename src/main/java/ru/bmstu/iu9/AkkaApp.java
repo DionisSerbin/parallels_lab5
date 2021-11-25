@@ -15,6 +15,7 @@ import akka.stream.javadsl.Flow;
 import javafx.util.Pair;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import akka.pattern.Patterns;
 
@@ -25,6 +26,7 @@ public class AkkaApp {
     private static final String TEST_URL = "testUrl";
     private static final String COUNT = "count";
     private static final int MAP_ASYNC = 1;
+    private static final int TIME_OUT = 5;
 
     private static Flow<HttpRequest, HttpResponse, NotUsed> createFLow(Http http, ActorSystem system,
                                                                        ActorMaterializer materializer, ActorRef actor){
@@ -44,7 +46,9 @@ public class AkkaApp {
                         req -> {
                             CompletionStage<Object> completionStage = Patterns.ask(
                                     actor,
-                                    new Message(req.first()))
+                                    new Message(req.first()),
+                                    Duration.ofSeconds(TIME_OUT)
+                            );
                         }
                 )
     }
