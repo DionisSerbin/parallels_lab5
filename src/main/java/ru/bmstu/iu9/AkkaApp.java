@@ -108,7 +108,8 @@ public class AkkaApp {
                                                 run(materializer).
                                                 thenApply(
                                                         sum -> new Pair<>(
-                                                                req.
+                                                                req.getKey(),
+                                                                sum /
                                                         )
                                                 )
                                     }
