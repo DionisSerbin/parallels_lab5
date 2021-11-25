@@ -36,6 +36,8 @@ public class AkkaApp {
     private static final String COUNT = "count";
     private static final int MAP_ASYNC = 1;
     private static final int TIME_OUT = 5;
+    private static final String TIME_RESPONSE = "Response time = ";
+    private static final String AVG_RESPONSE_TIME_PTR = "Average resPonse time = ";
 
     private static Flow<HttpRequest, HttpResponse, NotUsed> createFLow(Http http, ActorSystem system,
                                                                        ActorMaterializer materializer, ActorRef actor){
@@ -87,7 +89,7 @@ public class AkkaApp {
                                                                         ))
                                                 ).mapAsync(req.second(),
                                                     url -> {
-                                                        long start= System.currentTimeMillis();
+                                                        long start = System.currentTimeMillis();
                                                         asyncHttpClient().prepareGet(url).execute();
                                                         long end = System.currentTimeMillis();
                                                         return CompletableFuture.
@@ -101,7 +103,7 @@ public class AkkaApp {
                                                 via(flow).
                                                 toMat(
                                                         Sink.fold(
-                                                                (int) 0,
+                                                                0,
                                                                 Integer::sum
                                                         ),
                                                         Keep.right()
