@@ -9,6 +9,7 @@ import akka.http.javadsl.Http;
 import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
+import akka.http.javadsl.model.Query;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 
@@ -19,10 +20,18 @@ public class AkkaApp {
 
     private static final String LOCAL_HOST = "localhost";
     private static final int PORT = 8080;
+    private static final String TEST_URL = "testUrl";
 
     private static Flow<HttpRequest, HttpResponse, NotUsed> createFLow(Http http, ActorSystem system,
                                                                        ActorMaterializer materializer, ActorRef actor){
-
+        return Flow.of(HttpRequest.class).
+                map(
+                        (req) -> {
+                            Query query = req.getUri().query();
+                            String url = query.get(TEST_URL).get();
+                            int count = Integer.parseInt(query.get())
+                        }
+                )
     }
 
     public static void main(String[] args) throws IOException {
