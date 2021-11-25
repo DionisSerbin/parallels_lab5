@@ -105,6 +105,12 @@ public class AkkaApp {
                                                         ),
                                                         Keep.right()
                                                 ).
+                                                run(materializer).
+                                                thenApply(
+                                                        sum -> new Pair<>(
+                                                                req.
+                                                        )
+                                                )
                                     }
                             )
                         }
