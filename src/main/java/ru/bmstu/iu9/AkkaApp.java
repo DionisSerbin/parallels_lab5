@@ -54,8 +54,21 @@ public class AkkaApp {
                                     res -> {
                                         if((Integer) res >= 0) {
                                             return CompletableFuture.
-                                                    completedFuture(new Pair<>(req.getKey()))
+                                                    completedFuture(new Pair<>(
+                                                            req.getKey(),
+                                                            (Integer) res
+                                                    ));
                                         }
+                                        Flow<
+                                                Pair<
+                                                        String,
+                                                        Integer
+                                                        >,
+                                                Integer,
+                                                NotUsed> flow = Flow.
+                                                    <Pair<
+                                                            String,
+                                                            Integer>>create().mapConcat()
                                     }
                             )
                         }
