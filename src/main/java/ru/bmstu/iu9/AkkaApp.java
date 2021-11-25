@@ -13,9 +13,10 @@ public class AkkaApp {
     public static void main(String[] args) throws IOException {
         System.out.println("Server is starting");
         ActorSystem system = ActorSystem.create("routes");
-        ActorRef actorRef = system.actorOf(Props.create(CacheActor.class));
+        ActorRef actor = system.actorOf(Props.create(CacheActor.class));
         final Http http = Http.get(system);
-        final ActorMaterializer materializer =
+        final ActorMaterializer materializer = ActorMaterializer.create(system);
+        
     }
 
 }
