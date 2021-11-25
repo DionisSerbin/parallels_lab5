@@ -79,7 +79,7 @@ public class AkkaApp {
                                                                                 pair.getValue(),
                                                                                 pair.getKey()
                                                                         ))
-                                                ).mapAsync()
+                                                ).mapAsync(req.getValue())
                                     }
                             )
                         }
