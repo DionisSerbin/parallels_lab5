@@ -4,15 +4,21 @@ import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import akka.http.javadsl.ConnectHttp;
 import akka.http.javadsl.Http;
+import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 
 import java.io.IOException;
+import java.util.concurrent.CompletionStage;
 
 public class AkkaApp {
+
+    private static final String LOCAL_HOST = "localhost";
+    private static final int PORT = 8080;
 
     private static Flow<HttpRequest, HttpResponse, NotUsed> createFLow(Http http, ActorSystem system,
                                                                        ActorMaterializer materializer, ActorRef actor){
@@ -30,8 +36,10 @@ public class AkkaApp {
                 HttpResponse,
                 NotUsed
                 > routeFlow = createFLow(http, system, materializer, actor);
+        final CompletionStage<ServerBinding> bind = http.bindAndHandle(
+                routeFlow,
+                ConnectHttp.toHost(H)
+        )
     }
-
-
 
 }
