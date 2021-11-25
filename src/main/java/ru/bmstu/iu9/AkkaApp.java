@@ -22,6 +22,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import akka.pattern.Patterns;
 
+import static org.asynchttpclient.Dsl.asyncHttpClient;
+
 public class AkkaApp {
 
     private static final String LOCAL_HOST = "localhost";
@@ -82,9 +84,15 @@ public class AkkaApp {
                                                 ).mapAsync(req.getValue(),
                                                     url -> {
                                                         long start= System.currentTimeMillis();
-                                                        async
+                                                        asyncHttpClient().prepareGet(url).execute();
+                                                        long end = System.currentTimeMillis();
+                                                        return CompletableFuture.
+                                                                completedFuture(
+                                                                        (int) (end - start)
+                                                                );
                                                     }
-                                                )
+                                                );
+                                        return S
                                     }
                             )
                         }
