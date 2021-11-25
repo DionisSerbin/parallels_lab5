@@ -29,7 +29,7 @@ public class AkkaApp {
                 HttpRequest,
                 HttpResponse,
                 NotUsed
-                > routeFlow = createFLow(http, system, materializer)
+                > routeFlow = createFLow(http, system, materializer, actor);
     }
 
 
