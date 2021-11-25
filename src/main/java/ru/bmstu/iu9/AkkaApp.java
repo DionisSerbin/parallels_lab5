@@ -47,14 +47,14 @@ public class AkkaApp {
                         req -> {
                             CompletionStage<Object> completionStage = Patterns.ask(
                                     actor,
-                                    new Message(req.first()),
+                                    new Message(req.getKey()),
                                     Duration.ofSeconds(TIME_OUT)
                             );
                             return completionStage.thenCompose(
                                     res -> {
                                         if((Integer) res >= 0) {
                                             return CompletableFuture.
-                                                    completedFuture(new Pair<>(req.first()))
+                                                    completedFuture(new Pair<>(req.getKey()))
                                         }
                                     }
                             )
