@@ -109,13 +109,13 @@ public class AkkaApp {
                                                 thenApply(
                                                         sum -> new Pair<>(
                                                                 req.getKey(),
-                                                                sum /
+                                                                (sum / req.getValue())
                                                         )
-                                                )
+                                                );
                                     }
-                            )
+                            );
                         }
-                )
+                ).
     }
 
     public static void main(String[] args) throws IOException {
