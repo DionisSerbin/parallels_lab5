@@ -51,20 +51,7 @@ public class AkkaApp {
                     System.out.println(url + " - " + count + "");
                     return new Pair<String, Integer>(url, count);
                 }
-                ).mapAsync(MAP_ASYNC, req -> { CompletionStage<Object> completionStage = Patterns.ask(actor, new Message(req.first()), Duration.ofSeconds(TIME_OUT));return completionStage.thenCompose(res -> { if((Integer) res >= 0) { return CompletableFuture.completedFuture(new Pair<>(req.first(), (Integer) res)); }Flow<
-                                                Pair<
-                                                        String,
-                                                        Integer
-                                                        >,
-                                                Integer,
-                                                NotUsed> flow = Flow.
-                                                    <Pair<
-                                                            String,
-                                                            Integer>>
-                                                            create().
-                                                mapConcat(
-                                                        pair -> new ArrayList<>(
-                                                                Collections.
+                ).mapAsync(MAP_ASYNC, req -> { CompletionStage<Object> completionStage = Patterns.ask(actor, new Message(req.first()), Duration.ofSeconds(TIME_OUT));return completionStage.thenCompose(res -> { if((Integer) res >= 0) { return CompletableFuture.completedFuture(new Pair<>(req.first(), (Integer) res)); }Flow<Pair<String, Integer>, Integer, NotUsed> flow = Flow.<Pair<String, Integer>>create().mapConcat(pair -> new ArrayList<>(Collections.
                                                                         nCopies(
                                                                                 pair.second(),
                                                                                 pair.first()
