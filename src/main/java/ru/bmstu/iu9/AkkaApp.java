@@ -51,44 +51,43 @@ public class AkkaApp {
                     System.out.println(url + " - " + count + "");
                     return new Pair<String, Integer>(url, count);
                 }
-                ).mapAsync(MAP_ASYNC, req -> { CompletionStage<Object> completionStage = Patterns.ask(actor, new Message(req.first()), Duration.ofSeconds(TIME_OUT));return completionStage.thenCompose(res -> { if((Integer) res >= 0) { return CompletableFuture.completedFuture(new Pair<>(req.first(), (Integer) res)); }Flow<Pair<String, Integer>, Integer, NotUsed> flow = Flow.<Pair<String, Integer>>create().mapConcat(pair -> new ArrayList<>(Collections.
-                                                                        nCopies(
-                                                                                pair.second(),
-                                                                                pair.first()
-                                                                        ))
-                                                ).mapAsync(req.second(),
-                                                    url -> {
-                                                        long start = System.currentTimeMillis();
-                                                        asyncHttpClient().prepareGet(url).execute();
-                                                        long end = System.currentTimeMillis();
-                                                        System.out.println(TIME_RESPONSE + (int) (end - start) + "\n");
-                                                        return CompletableFuture.
-                                                                completedFuture(
-                                                                        (int) (end - start)
-                                                                );
-                                                    }
-                                                );
-                                        return Source.
-                                                single(req).
-                                                via(flow).
-                                                toMat(
-                                                        Sink.fold(
-                                                                0,
-                                                                Integer::sum
-                                                        ),
-                                                        Keep.right()
-                                                ).
-                                                run(materializer).
-                                                thenApply(
-                                                        sum -> new Pair<>(
-                                                                req.first(),
-                                                                (sum / req.second())
-                                                        )
-                                                );
+                ).mapAsync(MAP_ASYNC,
+                    req -> {
+                        CompletionStage<Object> completionStage = Patterns.ask(
+                                actor,
+                                new Message(
+                                        req.first()
+                                ),
+                                Duration.ofSeconds(TIME_OUT));
+                        return completionStage.thenCompose(
+                                res -> {
+                                    if((Integer) res >= 0) {
+                                        return CompletableFuture.completedFuture(
+                                                new Pair<>(
+                                                        req.first(),
+                                                        (Integer) res
+                                                )
+                                        );
                                     }
-                            );
-                        }
-                ).
+                                    Flow<
+                                            Pair<
+                                                    String,
+                                                    Integer>,
+                                            Integer,
+                                            NotUsed> flow = Flow.<Pair<String, Integer>>create().mapConcat(
+                                                    pair -> new ArrayList<>(
+                                                            Collections.nCopies(
+                                                                    pair.second(),
+                                                                    pair.first()
+                                                            )
+                                                    )
+                                    ).mapAsync(
+                                            req.second(),
+                                            url -> {
+                                                long start = System.currentTimeMillis();
+                                                asyncHttpClient().prepareGet(url).execute();long end = System.currentTimeMillis();System.out.println(TIME_RESPONSE + (int) (end - start) + "\n");return CompletableFuture.completedFuture((int) (end - start)); });return Source.single(req).via(flow).toMat(Sink.fold(0, Integer::sum), Keep.right()).run(materializer).thenApply(sum -> new Pair<>(req.first(), (sum / req.second()))); });
+                    }
+                        ).
                 map(
                         req -> {
                             actor.tell(
