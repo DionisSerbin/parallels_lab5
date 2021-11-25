@@ -12,6 +12,7 @@ import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.Query;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
@@ -21,6 +22,8 @@ public class AkkaApp {
     private static final String LOCAL_HOST = "localhost";
     private static final int PORT = 8080;
     private static final String TEST_URL = "testUrl";
+    private static final String COUNT = "count";
+    private static final int MAP_ASYNC = 1;
 
     private static Flow<HttpRequest, HttpResponse, NotUsed> createFLow(Http http, ActorSystem system,
                                                                        ActorMaterializer materializer, ActorRef actor){
@@ -29,7 +32,16 @@ public class AkkaApp {
                         (req) -> {
                             Query query = req.getUri().query();
                             String url = query.get(TEST_URL).get();
-                            int count = Integer.parseInt(query.get())
+                            int count = Integer.parseInt(
+                                    query.get(COUNT).get()
+                            );
+                            System.out.println(url + " " + count);
+                            return new Pair<String, Integer>(url, count);
+                        }
+                ).
+                mapAsync(MAP_ASYNC,
+                        req -> {
+                            CompletionStage<>
                         }
                 )
     }
